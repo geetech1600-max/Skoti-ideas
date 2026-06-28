@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For Lister | With Love</title>
+    <style>
+        /* ─── RESET & BASE ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #faf8f5;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            overflow-x: hidden;
+            color: #2c1810;
+        }
+
+        /* ─── ROSE PATTERN OVERLAY ─── */
+        .rose-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.06"><path d="M50 15C35 15 25 25 25 40c0 15 10 25 25 25s25-10 25-25c0-15-10-25-25-25z" fill="%23c9a84c"/><path d="M50 65C35 65 25 75 25 90c0 15 10 25 25 25s25-10 25-25c0-15-10-25-25-25z" fill="%23c9a84c"/><circle cx="50" cy="40" r="8" fill="%23c9a84c"/><circle cx="50" cy="90" r="8" fill="%23c9a84c"/></svg>');
+            background-size: 180px 180px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── GOLD DIVIDER ─── */
+        .gold-divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+            margin: 20px auto;
+        }
+
+        .gold-divider.thick {
+            height: 3px;
+            width: 120px;
+            margin: 30px auto;
+        }
+
+        /* ─── MAIN WRAPPER ─── */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 30px 100px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ─── TOP ACCENT ─── */
+        .top-accent {
+            font-size: 0.8rem;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: #c9a84c;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        /* ─── MAIN TITLE ─── */
+        .main-title {
+            font-size: 5.5rem;
+            font-weight: 700;
+            color: #2c1810;
+            letter-spacing: 6px;
+            line-height: 1.1;
+            text-align: center;
+        }
+
+        .main-title .gold {
+            color: #c9a84c;
+        }
+
+        .main-title .light {
+            font-weight: 300;
+            color: #8a7a6a;
+            font-size: 3rem;
+            display: block;
+            letter-spacing: 12px;
+            margin-top: 5px;
+        }
+
+        /* ─── ROSE ICON (SVG) ─── */
+        .rose-icon {
+            display: inline-block;
+            margin: 15px 0;
+            width: 48px;
+            height: 48px;
+        }
+
+        .rose-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #c9a84c;
+        }
+
+        /* ─── IMAGE GALLERY ─── */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 40px 0;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(44, 24, 16, 0.12);
+            aspect-ratio: 1 / 1;
+            background: #f0ece6;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 50px rgba(201, 168, 76, 0.25);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-item .gold-border {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .gallery-item:hover .gold-border {
+            opacity: 1;
+        }
+
+        /* ─── LARGE FEATURED IMAGE ─── */
+        .featured-wrap {
+            width: 100%;
+            max-width: 500px;
+            margin: 10px 0 30px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 12px 50px rgba(44, 24, 16, 0.15);
+            border: 2px solid rgba(201, 168, 76, 0.2);
+            transition: all 0.5s ease;
+        }
+
+        .featured-wrap:hover {
+            border-color: #c9a84c;
+            box-shadow: 0 20px 60px rgba(201, 168, 76, 0.2);
+        }
+
+        .featured-wrap img {
+            width: 100%;
+            height: auto;
+            display: block;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+        }
+
+        /* ─── LOVE MESSAGE ─── */
+        .love-message {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: #3d2a1e;
+            text-align: center;
+            max-width: 600px;
+            margin: 20px 0 10px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            padding: 0 20px;
+        }
+
+        .love-message .gold-text {
+            color: #c9a84c;
+            font-weight: 700;
+        }
+
+        .love-message .italic {
+            font-style: italic;
+            color: #8a7a6a;
+        }
+
+        /* ─── CLICK COUNTER ─── */
+        .counter-section {
+            margin: 30px 0 20px;
+            text-align: center;
+        }
+
+        .counter-label {
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #b0a090;
+            font-weight: 300;
+        }
+
+        .counter-number {
+            font-size: 3.8rem;
+            font-weight: 300;
+            color: #c9a84c;
+            letter-spacing: 4px;
+            font-family: 'Georgia', serif;
+            margin-top: 2px;
+        }
+
+        /* ─── MESSAGE ROTATOR ─── */
+        .rotating-message {
+            font-size: 1.15rem;
+            color: #5a4a3a;
+            text-align: center;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            border-top: 1px solid rgba(201, 168, 76, 0.15);
+            border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+            padding: 20px 30px;
+            max-width: 650px;
+            margin: 10px auto;
+        }
+
+        .rotating-message .gold {
+            color: #c9a84c;
+            font-weight: 700;
+        }
+
+        /* ─── FROM CASSIDY ─── */
+        .from-cassidy {
+            margin-top: 50px;
+            font-size: 1rem;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            color: #b0a090;
+            font-weight: 300;
+            border-top: 1px solid rgba(201, 168, 76, 0.15);
+            padding-top: 35px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .from-cassidy .gold {
+            color: #c9a84c;
+            font-weight: 700;
+            letter-spacing: 6px;
+        }
+
+        /* ─── SURPRISE OVERLAY ─── */
+        .surprise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(250, 248, 245, 0.97);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .surprise-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .surprise-content {
+            text-align: center;
+            padding: 40px;
+            animation: fadeScale 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            max-width: 700px;
+        }
+
+        @keyframes fadeScale {
+            0% {
+                transform: scale(0.85);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .surprise-content .big-name {
+            font-size: 5.5rem;
+            font-weight: 700;
+            color: #2c1810;
+            letter-spacing: 8px;
+            line-height: 1.2;
+        }
+
+        .surprise-content .big-name .gold {
+            color: #c9a84c;
+        }
+
+        .surprise-content .big-name .heart-symbol {
+            color: #c9a84c;
+            font-size: 4rem;
+            display: inline-block;
+            margin: 0 15px;
+            animation: pulseGold 1.8s ease-in-out infinite;
+        }
+
+        @keyframes pulseGold {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        .surprise-content .sub-message {
+            font-size: 1.6rem;
+            color: #5a4a3a;
+            font-weight: 300;
+            letter-spacing: 6px;
+            margin-top: 15px;
+        }
+
+        .surprise-content .close-btn {
+            margin-top: 40px;
+            background: transparent;
+            border: 1.5px solid #c9a84c;
+            color: #c9a84c;
+            padding: 14px 50px;
+            font-size: 0.85rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: 'Georgia', serif;
+            background: #c9a84c;
+            color: #fff;
+        }
+
+        .surprise-content .close-btn:hover {
+            background: transparent;
+            color: #c9a84c;
+        }
+
+        /* ─── CONFETTI (gold & white) ─── */
+        .confetti-piece {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1999;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-20vh) rotate(0deg) scale(0.6);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(120vh) rotate(720deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* ─── FLOATING ROSE PETALS ─── */
+        .petal {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+            animation: petalFloat linear infinite;
+            font-size: 1.8rem;
+            color: #c9a84c;
+        }
+
+        @keyframes petalFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.15;
+            }
+            90% {
+                opacity: 0.15;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 3.2rem;
+                letter-spacing: 3px;
+            }
+            .main-title .light {
+                font-size: 1.8rem;
+                letter-spacing: 6px;
+            }
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                max-width: 100%;
+            }
+            .love-message {
+                font-size: 1.1rem;
+                padding: 0 15px;
+            }
+            .rotating-message {
+                font-size: 1rem;
+                padding: 15px 20px;
+                min-height: 60px;
+            }
+            .counter-number {
+                font-size: 2.8rem;
+            }
+            .surprise-content .big-name {
+                font-size: 3.2rem;
+                letter-spacing: 4px;
+            }
+            .surprise-content .big-name .heart-symbol {
+                font-size: 2.5rem;
+                margin: 0 8px;
+            }
+            .surprise-content .sub-message {
+                font-size: 1.2rem;
+                letter-spacing: 3px;
+            }
+            .from-cassidy {
+                font-size: 0.8rem;
+                letter-spacing: 6px;
+            }
+            .featured-wrap {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            .main-title .light {
+                font-size: 1.4rem;
+                letter-spacing: 4px;
+            }
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .wrapper {
+                padding: 20px 15px 80px;
+            }
+            .surprise-content .big-name {
+                font-size: 2.2rem;
+            }
+            .surprise-content .big-name .heart-symbol {
+                font-size: 1.8rem;
+            }
+            .surprise-content .sub-message {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── ROSE PATTERN ─── -->
+    <div class="rose-pattern"></div>
+
+    <!-- ─── SURPRISE OVERLAY ─── -->
+    <div class="surprise-overlay" id="surpriseOverlay">
+        <div class="surprise-content">
+            <div class="big-name">
+                <span class="gold">Lister</span>
+                <span class="heart-symbol">♥</span>
+                <span>Cassidy</span>
+            </div>
+            <div class="gold-divider thick"></div>
+            <div class="sub-message">Forever & Always</div>
+            <button class="close-btn" id="closeSurprise">Continue</button>
+        </div>
+    </div>
+
+    <!-- ─── MAIN WRAPPER ─── -->
+    <div class="wrapper">
+
+        <!-- Top Accent -->
+        <div class="top-accent">With Love</div>
+
+        <!-- Rose SVG -->
+        <div class="rose-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C12 22 4 16 4 10C4 6 7 3 12 5C17 3 20 6 20 10C20 16 12 22 12 22Z"/>
+                <path d="M12 5C12 5 8 2 6 6C4 10 8 12 12 14" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+                <path d="M12 5C12 5 16 2 18 6C20 10 16 12 12 14" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+                <circle cx="12" cy="14" r="2.5" fill="#c9a84c"/>
+            </svg>
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="main-title">
+            Lister
+            <span class="light">For You</span>
+        </h1>
+
+        <div class="gold-divider"></div>
+
+        <!-- ─── FEATURED IMAGE ─── -->
+        <div class="featured-wrap">
+            <img
+            src="https://res.cloudinary.com/dmi9cbt3x/image/upload/v1782674937/0aae419220d8439ba221a619dca2219d_jnhdwr.jpg"
+            alt="Lister"
+            id="featuredImage"
+            />
+        </div>
+
+        <!-- ─── IMAGE GALLERY (Your 3 Cloudinary images) ─── -->
+        <div class="gallery" id="gallery">
+            <div class="gallery-item">
+                <img src="https://res.cloudinary.com/dmi9cbt3x/image/upload/v1782675151/IMG-20260618-WA0089_qhol3i.jpg" alt="Memory 1" />
+                <div class="gold-border"></div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://res.cloudinary.com/dmi9cbt3x/image/upload/v1782675155/IMG_20260604_001812_rqw7xz.jpg" alt="Memory 2" />
+                <div class="gold-border"></div>
+            </div>
+            <div class="gallery-item">
+                <img src="https://res.cloudinary.com/dmi9cbt3x/image/upload/v1782675151/IMG-20260619-WA0033_g83aty.jpg" alt="Memory 3" />
+                <div class="gold-border"></div>
+            </div>
+        </div>
+
+        <!-- ─── LOVE MESSAGE ─── -->
+        <p class="love-message">
+            You are the <span class="gold-text">most beautiful</span> part of my world.
+            Every moment with you is a <span class="gold-text">treasure</span>.
+            <span class="italic">— Always, Cassidy</span>
+        </p>
+
+        <div class="gold-divider"></div>
+
+        <!-- ─── ROTATING MESSAGE ─── -->
+        <div class="rotating-message" id="rotatingMessage">
+            Click anywhere to see <span class="gold">why I love you</span>
+        </div>
+
+        <!-- ─── COUNTER ─── -->
+        <div class="counter-section">
+            <div class="counter-label">Times I've thought of you today</div>
+            <div class="counter-number" id="counter">0</div>
+        </div>
+
+        <!-- ─── FROM CASSIDY ─── -->
+        <div class="from-cassidy">
+            From <span class="gold">Cassidy</span>
+        </div>
+
+    </div>
+
+    <script>
+        // ─── CONFIG ───
+        const HER_NAME = "Lister";
+        const MY_NAME = "Cassidy";
+
+        // ─── ROTATING MESSAGES ───
+        const messages = [
+            'Your smile <span class="gold">lights up</span> my whole world',
+            'You are <span class="gold">grace</span> and <span class="gold">beauty</span> combined',
+            'I fall for you <span class="gold">more deeply</span> each day',
+            'Your laugh is <span class="gold">music</span> to my soul',
+            'You have the <span class="gold">kindest heart</span> I know',
+            'You are <span class="gold">my everything</span>, always',
+            'I choose you <span class="gold">every single day</span>',
+            'You are <span class="gold">irreplaceable</span> to me',
+            'I am so <span class="gold">lucky</span> to have you',
+            'You make life <span class="gold">extraordinary</span>'
+        ];
+
+        let msgIndex = 0;
+        let clickCount = 0;
+        const counterEl = document.getElementById('counter');
+        const msgEl = document.getElementById('rotatingMessage');
+        const surpriseOverlay = document.getElementById('surpriseOverlay');
+
+        // ─── FLOATING PETALS ───
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.textContent = '✿';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.fontSize = (Math.random() * 1.8 + 1) + 'rem';
+            petal.style.animationDuration = (Math.random() * 20 + 15) + 's';
+            petal.style.opacity = (Math.random() * 0.1 + 0.05);
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 35000);
+        }
+
+        for (let i = 0; i < 12; i++) setTimeout(createPetal, i * 800);
+        setInterval(createPetal, 2000);
+
+        // ─── CONFETTI ───
+        function createConfetti(count = 60) {
+            const colors = ['#c9a84c', '#faf8f5', '#e8d5b0', '#d4af37', '#f5f0eb', '#b8860b'];
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const piece = document.createElement('div');
+                    piece.className = 'confetti-piece';
+                    piece.style.width = (Math.random() * 10 + 4) + 'px';
+                    piece.style.height = (Math.random() * 10 + 4) + 'px';
+                    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    piece.style.left = Math.random() * 100 + 'vw';
+                    piece.style.animationDuration = (Math.random() * 2.5 + 2) + 's';
+                    piece.style.animationDelay = (Math.random() * 0.5) + 's';
+                    piece.style.boxShadow = '0 0 6px rgba(201,168,76,0.15)';
+                    document.body.appendChild(piece);
+                    setTimeout(() => piece.remove(), 4000);
+                }, i * 25);
+            }
+        }
+
+        // ─── CLICK HANDLER ───
+        document.addEventListener('click', function(e) {
+            clickCount++;
+            counterEl.textContent = clickCount;
+
+            // Cycle message every 3 clicks
+            if (clickCount % 3 === 0) {
+                msgIndex = (msgIndex + 1) % messages.length;
+                msgEl.innerHTML = messages[msgIndex];
+            }
+
+            // Surprise at 15 clicks
+            if (clickCount === 15) {
+                surpriseOverlay.classList.add('show');
+                createConfetti(80);
+            }
+
+            // Click ripple effect (gold rings)
+            for (let i = 0; i < 6; i++) {
+                const ring = document.createElement('div');
+                ring.style.cssText = `
+                            position: fixed;
+                            left: ${e.clientX}px;
+                            top: ${e.clientY}px;
+                            width: ${10 + i * 6}px;
+                            height: ${10 + i * 6}px;
+                            border: 1px solid rgba(201,168,76,${0.25 - i * 0.035});
+                            border-radius: 50%;
+                            pointer-events: none;
+                            z-index: 999;
+                            transform: translate(-50%, -50%) scale(0.3);
+                            opacity: 1;
+                            animation: ringExpand ${0.7 + i * 0.05}s ease-out forwards;
+                        `;
+                document.body.appendChild(ring);
+                setTimeout(() => ring.remove(), 1200);
+
+                // Inject keyframe if not exists
+                if (!document.getElementById('ringStyle')) {
+                    const style = document.createElement('style');
+                    style.id = 'ringStyle';
+                    style.textContent = `
+                                @keyframes ringExpand {
+                                    0% { transform: translate(-50%, -50%) scale(0.3); opacity: 1; }
+                                    100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+                                }
+                            `;
+                    document.head.appendChild(style);
+                }
+            }
+        });
+
+        // ─── CLOSE SURPRISE ───
+        document.getElementById('closeSurprise').addEventListener('click', function() {
+            surpriseOverlay.classList.remove('show');
+        });
+
+        surpriseOverlay.addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('show');
+        });
+
+        // ─── GALLERY CLICK → UPDATE FEATURED ───
+        document.querySelectorAll('.gallery-item img').forEach((img) => {
+            img.parentElement.addEventListener('click', function() {
+                const src = img.getAttribute('src');
+                document.getElementById('featuredImage').setAttribute('src', src);
+                // Add a subtle animation
+                const featured = document.getElementById('featuredImage');
+                featured.style.transition = 'opacity 0.3s ease';
+                featured.style.opacity = '0.6';
+                setTimeout(() => { featured.style.opacity = '1'; }, 100);
+            });
+        });
+
+        // ─── INIT ───
+        setTimeout(() => {
+            msgEl.innerHTML = messages[0];
+        }, 300);
+
+        console.log(`♥ ${HER_NAME} + ${MY_NAME} ♥`);
+        console.log('Made with love by Cassidy');
+    </script>
+</body>
+</html>
